@@ -1,0 +1,5 @@
+K Means scores:
+Running time: 0.0173 seconds
+Sensitivity (Silhouette Score): 0.3959
+Inter-cluster distance: 0.0000
+Intra-cluster distance: 0.3709
