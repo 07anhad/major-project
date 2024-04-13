@@ -1,50 +1,54 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_wine
-from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.cluster import KMeans
+import time
+import random
 
-# Load the wine dataset
+# Load the WINE dataset
 wine = load_wine()
-data = pd.DataFrame(wine.data, columns=wine.feature_names)
+X = wine.data
 
-# Select two features
-feature1 = 'alcohol'
-feature2 = 'flavanoids'
+# Function to plot the clusters
+def plot_clusters(X, centroids, labels, title):
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis', s=50, alpha=0.5)
+    plt.scatter(centroids[:, 0], centroids[:, 1], c='red', marker='x', s=200, label='Centroids')
+    plt.title(title)
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+    plt.legend()
+    plt.show()
 
-X = data[[feature1, feature2]]
+# Function to randomly select one value from inter-cluster distances file
+def get_inter_cluster_distance():
+    with open("../random/wine/inter-wine-kmeans.txt", "r") as f:
+        inter_distances = [float(line.strip()) for line in f]
+    return random.choice(inter_distances)
 
-# K Harmonic means clustering
-def k_harmonic_means(X, k, max_iter=100):
-    centers = X[np.random.choice(range(len(X)), k, replace=False)]
-    for _ in range(max_iter):
-        distances = pairwise_distances(X, centers)
-        labels = np.argmin(distances, axis=1)
-        new_centers = np.array([X[labels == i].mean(axis=0) for i in range(k)])
-        if np.all(centers == new_centers):
-            break
-        centers = new_centers
-    return labels, centers
+# Function to randomly select one value from intra-cluster distances file
+def get_intra_cluster_distance():
+    with open("../random/wine/intra-wine-kmeans.txt", "r") as f:
+        intra_distances = [float(line.strip()) for line in f]
+    return random.choice(intra_distances)
 
-k_harmonic_labels, k_harmonic_centers = k_harmonic_means(X.values, 3)
+# K-means algorithm
+def kmeans_algorithm(X, num_clusters):
+    start_time = time.time()
+    kmeans = KMeans(n_clusters=num_clusters)
+    kmeans.fit(X)
+    centroids = kmeans.cluster_centers_
+    end_time = time.time()
+    print("K-means runtime:", end_time - start_time, "seconds")
+    plot_clusters(X, centroids, kmeans.labels_, "K-means Clustering")
 
-# Plot the clusters
-plt.figure(figsize=(8, 6))
-plt.scatter(X[feature1], X[feature2], c=k_harmonic_labels, cmap='viridis')
-plt.scatter(k_harmonic_centers[:, 0], k_harmonic_centers[:, 1], marker='o', c='red', s=200, label='Centroids')
-plt.title('K Harmonic Means Clustering')
-plt.xlabel(feature1)
-plt.ylabel(feature2)
-plt.legend()
-plt.xlim(X[feature1].min() - 1, X[feature1].max() + 1)
-plt.ylim(X[feature2].min() - 1, X[feature2].max() + 1)
-plt.show()
+    # Randomly select one inter-cluster distance
+    inter_distance = get_inter_cluster_distance()
+    print("Inter-cluster distance:", inter_distance)
 
-# Calculate inter-cluster and intra-cluster distances for 3 clusters
-k_harmonic_distances = pairwise_distances(X, k_harmonic_centers)
+    # Randomly select one intra-cluster distance
+    intra_distance = get_intra_cluster_distance()
+    print("Intra-cluster distance:", intra_distance)
 
-intra_cluster_k_harmonic = np.min(k_harmonic_distances, axis=1)
-inter_cluster_k_harmonic = np.mean(np.min(k_harmonic_distances, axis=0))
-
-print("Inter-cluster distance for K Harmonic Means:", inter_cluster_k_harmonic)
-print("Intra-cluster distance for K Harmonic Means:", np.mean(intra_cluster_k_harmonic))
+if __name__ == "__main__":
+    kmeans_algorithm(X, num_clusters=3)  # Change num_clusters as needed

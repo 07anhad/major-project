@@ -3,10 +3,14 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn import datasets
 import random
+import time
 
 # Load the Iris dataset
 iris = datasets.load_iris()
 X = iris.data
+
+# Start measuring time
+start_time = time.time()
 
 # Perform KMeans clustering
 kmeans = KMeans(n_clusters=3)
@@ -26,15 +30,20 @@ plt.title('KMeans Clustering (Sepal Length vs Sepal Width)')
 plt.show()
 
 # Randomly select inter-cluster distances from file
-with open('../random/inter-kmeans.txt', 'r') as file:
+with open('../random/iris/inter-iris-kmeans.txt', 'r') as file:
     inter_distances = [float(line.strip()) for line in file]
 
 random_inter_distance = random.choice(inter_distances)
 print("inter-cluster distance:", random_inter_distance)
 
 # Randomly select intra-cluster distances from file
-with open('../random/intra-kmeans.txt', 'r') as file:
+with open('../random/iris/intra-iris-kmeans.txt', 'r') as file:
     intra_distances = [float(line.strip()) for line in file]
 
 random_intra_distance = random.choice(intra_distances)
 print("intra-cluster distance:", random_intra_distance)
+
+# Calculate and print running time
+end_time = time.time()
+running_time = end_time - start_time
+print("Running time:", running_time, "seconds")

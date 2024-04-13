@@ -60,14 +60,14 @@ plt.title('K-Harmonic Means Clustering (Sepal Length vs Sepal Width)')
 plt.show()
 
 # Randomly select inter-cluster distances from file
-with open('../random/inter-KHM.txt', 'r') as file:
+with open('../random/iris/inter-iris-kmeans.txt', 'r') as file:
     inter_distances = [float(line.strip()) for line in file]
 
 random_inter_distance = random.choice(inter_distances)
 print("inter-cluster distance:", random_inter_distance)
 
 # Randomly select intra-cluster distances from file
-with open('../random/intra-KHM.txt', 'r') as file:
+with open('../random/iris/intra-iris-KHM.txt', 'r') as file:
     intra_distances = [float(line.strip()) for line in file]
 
 random_intra_distance = random.choice(intra_distances)
