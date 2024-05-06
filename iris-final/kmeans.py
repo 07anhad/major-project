@@ -41,7 +41,7 @@ with open('../random/iris/intra-iris-kmeans.txt', 'r') as file:
     intra_distances = [float(line.strip()) for line in file]
 
 random_intra_distance = random.choice(intra_distances)
-print("intra-cluster distance:", random_intra_distance)
+print("intra-cluster distance:"2, random_intra_distance)
 
 # Calculate and print running time
 end_time = time.time()
